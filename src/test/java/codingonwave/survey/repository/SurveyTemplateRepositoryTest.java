@@ -39,7 +39,6 @@ class SurveyTemplateRepositoryTest {
 
         QuestionTemplateDto question1 = new QuestionTemplateDto(
                 "question1",
-                null,
                 QuestionType.TEXT,
                 answerList1,
                 category1);
@@ -65,7 +64,6 @@ class SurveyTemplateRepositoryTest {
 
         return new QuestionTemplateDto(
                 "new question",
-                null,
                 QuestionType.TEXT,
                 Arrays.asList(new AnswerTemplateDto("yes", 100), new AnswerTemplateDto("no", 0)),
                 category);
@@ -195,12 +193,7 @@ class SurveyTemplateRepositoryTest {
         //then
         SurveyTemplateDto findSurveyTemplate = sut.findById(targetSurveyTemplate.getId());
         for (QuestionTemplateDto dto : findSurveyTemplate.getQuestionTemplateList()) {
-            if (dto.getQuestionType().equals(QuestionType.IMAGE)) {
-                assertThat(dto.getImageUrl()).isEqualTo("update");
-            }
-            else {
-                assertThat(dto.getText()).isEqualTo("update");
-            }
+            assertThat(dto.getValue()).isEqualTo("update");
         }
     }
 

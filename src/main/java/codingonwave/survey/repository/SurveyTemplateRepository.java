@@ -104,13 +104,7 @@ public class SurveyTemplateRepository {
     public void updateQuestion(QuestionTemplateDto questionTemplate, QuestionType questionType, String newValue) {
         QuestionTemplate savedQuestionTemplate = em.find(QuestionTemplate.class, questionTemplate.getId());
         savedQuestionTemplate.setQuestionType(questionType);
-
-        if (savedQuestionTemplate.getQuestionType().equals(QuestionType.IMAGE)) {
-            savedQuestionTemplate.setImageUrl(newValue);
-        }
-        else {
-            savedQuestionTemplate.setText(newValue);
-        }
+        savedQuestionTemplate.setValue(newValue);
 
     }
 
@@ -147,8 +141,7 @@ public class SurveyTemplateRepository {
 
     private QuestionTemplate makeQuestionTemplate(QuestionTemplateDto dto) {
         QuestionTemplate questionTemplate = new QuestionTemplate(
-                dto.getText(),
-                dto.getImageUrl(),
+                dto.getValue(),
                 dto.getQuestionType(),
                 new CategoryTemplate(dto.getCategory().getId()));
 
@@ -175,8 +168,7 @@ public class SurveyTemplateRepository {
     private QuestionTemplateDto convertQuestionTemplate(QuestionTemplate template) {
         return new QuestionTemplateDto(
             template.getId(),
-            template.getText(),
-            template.getImageUrl(),
+            template.getValue(),
             template.getQuestionType(),
             convertAnswerTemplate(template.getAnswerTemplateList()),
             convertCategoryTemplate(template.getCategoryTemplate()));

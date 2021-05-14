@@ -42,11 +42,11 @@ class SurveyTemplateControllerTest {
         given().contentType("application/json").body(category1).post("/category-template");
         CategoryTemplateDto[] categoryTemplates = when().get("/category-template").as(CategoryTemplateDto[].class);
 
-        QuestionTemplateDto question1 = new QuestionTemplateDto("question1", null, QuestionType.TEXT,
+        QuestionTemplateDto question1 = new QuestionTemplateDto("question1", QuestionType.TEXT,
                 Arrays.asList(new AnswerTemplateDto("yes", 100), new AnswerTemplateDto("no", 0)),
                 categoryTemplates[0]);
 
-        QuestionTemplateDto question2 = new QuestionTemplateDto("question2", null, QuestionType.TEXT,
+        QuestionTemplateDto question2 = new QuestionTemplateDto("question2", QuestionType.TEXT,
                 Arrays.asList(new AnswerTemplateDto("yes", 100), new AnswerTemplateDto("no", 0)),
                 categoryTemplates[0]);
 
@@ -78,11 +78,11 @@ class SurveyTemplateControllerTest {
         //given
         CategoryTemplateDto[] categoryTemplates = when().get("/category-template").as(CategoryTemplateDto[].class);
 
-        QuestionTemplateDto question1 = new QuestionTemplateDto("new-question-1", null, QuestionType.TEXT,
+        QuestionTemplateDto question1 = new QuestionTemplateDto("new-question-1", QuestionType.TEXT,
                 Arrays.asList(new AnswerTemplateDto("yes", 100), new AnswerTemplateDto("no", 0)),
                 categoryTemplates[0]);
 
-        QuestionTemplateDto question2 = new QuestionTemplateDto("new-question-2", null, QuestionType.TEXT,
+        QuestionTemplateDto question2 = new QuestionTemplateDto("new-question-2", QuestionType.TEXT,
                 Arrays.asList(new AnswerTemplateDto("yes", 100), new AnswerTemplateDto("no", 0)),
                 categoryTemplates[0]);
 
@@ -117,7 +117,7 @@ class SurveyTemplateControllerTest {
 
         CategoryTemplateDto[] categoryTemplates = when().get("/category-template").as(CategoryTemplateDto[].class);
 
-        QuestionTemplateDto newQuestionTemplate = new QuestionTemplateDto("new-question", null, QuestionType.TEXT,
+        QuestionTemplateDto newQuestionTemplate = new QuestionTemplateDto("new-question", QuestionType.TEXT,
                 Arrays.asList(new AnswerTemplateDto("yes", 100), new AnswerTemplateDto("no", 0)),
                 categoryTemplates[0]);
 
@@ -142,8 +142,7 @@ class SurveyTemplateControllerTest {
         assertThat(findSurveyTemplate.getQuestionTemplateList().size()).isEqualTo(3);
 
         List<String> textQuestionValues = findSurveyTemplate.getQuestionTemplateList()
-                .stream().filter(template -> template.getQuestionType().equals(QuestionType.TEXT))
-                .map(QuestionTemplateDto::getText)
+                .stream().map(QuestionTemplateDto::getValue)
                 .collect(Collectors.toList());
 
         assertThat(textQuestionValues).contains("new-question");
@@ -176,7 +175,7 @@ class SurveyTemplateControllerTest {
                 .stream().filter(template -> template.getId().equals(questionTemplate.getId())).findFirst().orElse(null);
 
         assertThat(findQuestionTemplate).isNotNull();
-        assertThat(findQuestionTemplate.getText()).isEqualTo("update-question");
+        assertThat(findQuestionTemplate.getValue()).isEqualTo("update-question");
     }
 
     @Test

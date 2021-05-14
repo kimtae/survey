@@ -17,9 +17,7 @@ public class QuestionTemplateDto {
 
     private Long id;
 
-    private String text;
-
-    private String imageUrl;
+    private String value;
 
     private QuestionType questionType;
 
@@ -28,20 +26,18 @@ public class QuestionTemplateDto {
     private CategoryTemplateDto category;
 
 
-    public QuestionTemplateDto(Long id, String text, String imageUrl, QuestionType questionType,
+    public QuestionTemplateDto(Long id, String value, QuestionType questionType,
                                List<AnswerTemplateDto> answerTemplateList, CategoryTemplateDto category) {
         this.id = id;
-        this.text = text;
-        this.imageUrl = imageUrl;
+        this.value = value;
         this.questionType = questionType;
         this.answerTemplateList = answerTemplateList;
         this.category = category;
     }
 
-    public QuestionTemplateDto(String text, String imageUrl, QuestionType questionType,
+    public QuestionTemplateDto(String value, QuestionType questionType,
                                List<AnswerTemplateDto> answerTemplateList, CategoryTemplateDto category) {
-        this.text = text;
-        this.imageUrl = imageUrl;
+        this.value = value;
         this.questionType = questionType;
         this.answerTemplateList = answerTemplateList;
         this.category = category;

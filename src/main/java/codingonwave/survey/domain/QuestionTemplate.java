@@ -14,9 +14,7 @@ public class QuestionTemplate {
     @GeneratedValue
     private Long id;
 
-    private String text;
-
-    private String imageUrl;
+    private String value;
 
     @Enumerated(EnumType.STRING)
     private QuestionType questionType;
@@ -42,9 +40,8 @@ public class QuestionTemplate {
         answerTemplateList.remove(answerTemplate);
     }
 
-    public QuestionTemplate(String text, String imageUrl, QuestionType questionType, CategoryTemplate categoryTemplate) {
-        this.text = text;
-        this.imageUrl = imageUrl;
+    public QuestionTemplate(String value, QuestionType questionType, CategoryTemplate categoryTemplate) {
+        this.value = value;
         this.questionType = questionType;
         this.categoryTemplate = categoryTemplate;
     }
@@ -57,12 +54,8 @@ public class QuestionTemplate {
         return id;
     }
 
-    public String getText() {
-        return text;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
+    public String getValue() {
+        return value;
     }
 
     public QuestionType getQuestionType() {
@@ -77,12 +70,8 @@ public class QuestionTemplate {
         return answerTemplateList;
     }
 
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public void setQuestionType(QuestionType questionType) {
