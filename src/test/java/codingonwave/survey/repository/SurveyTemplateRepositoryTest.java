@@ -279,4 +279,22 @@ class SurveyTemplateRepositoryTest {
         //then
         assertThat(findQuestionTemplate.getAnswerTemplateList().size()).isEqualTo(1);
     }
+
+    @Test
+    void sut_correctly_get_question_category() {
+        //given
+        SurveyTemplateDto surveyTemplate = makeNewSurveyTemplateDto();
+
+        //when
+        sut.save(surveyTemplate);
+
+        //then
+        List<SurveyTemplateDto> surveyTemplates = sut.findAll();
+        for (SurveyTemplateDto savedSurveyTemplate : surveyTemplates) {
+            List<QuestionTemplateDto> questionTemplateList = savedSurveyTemplate.getQuestionTemplateList();
+            for (QuestionTemplateDto questionTemplate : questionTemplateList) {
+                assertThat(questionTemplate.getCategory().getName()).isNotEmpty();
+            }
+        }
+    }
 }

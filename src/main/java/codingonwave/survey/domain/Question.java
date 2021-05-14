@@ -12,16 +12,21 @@ public class Question {
 
     private List<Answer> answerList = new ArrayList<>();
 
+    private Category category;
+
     public static Question from(QuestionTemplateDto questionTemplate) {
         List<Answer> answerList = questionTemplate.getAnswerTemplateList().stream()
                 .map(Answer::from).collect(Collectors.toList());
 
-        return new Question(questionTemplate.getValue(), answerList);
+        Category category = Category.from(questionTemplate.getCategory());
+
+        return new Question(questionTemplate.getValue(), answerList, category);
     }
 
-    public Question(String value, List<Answer> answerList) {
+    public Question(String value, List<Answer> answerList, Category category) {
         this.value = value;
         this.answerList = answerList;
+        this.category = category;
     }
 
     public String getValue() {
@@ -47,5 +52,9 @@ public class Question {
 
     public Answer getAnswer(Integer answerIndex) {
         return answerList.get(answerIndex);
+    }
+
+    public Category getCategory() {
+        return category;
     }
 }

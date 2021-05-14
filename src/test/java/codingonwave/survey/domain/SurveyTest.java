@@ -110,6 +110,22 @@ class SurveyTest {
     }
 
     @Test
+    void sut_correctly_make_question_category() {
+        //given
+        Survey sut = new Survey();
+        SurveyTemplateDto surveyTemplate = surveyTemplateRepository.findAll().get(0);
+
+        //when
+        sut.init(surveyTemplate);
+        Question firstQuestion = sut.getQuestionByIndex(0);
+        Question secondQuestion = sut.getQuestionByIndex(1);
+
+        //then
+        assertThat(firstQuestion.getCategory().getName()).isEqualTo("category1");
+        assertThat(secondQuestion.getCategory().getName()).isEqualTo("category2");
+    }
+
+    @Test
     void sut_correctly_make_answer() {
         //given
         Survey sut = new Survey();
@@ -234,5 +250,25 @@ class SurveyTest {
 
         //then
         assertThat(isFinish).isFalse();
+    }
+
+    @Test
+    void sut_correctly_calculate_by_category() {
+        //given
+        Survey sut = new Survey();
+        SurveyTemplateDto surveyTemplate = surveyTemplateRepository.findAll().get(0);
+        sut.init(surveyTemplate);
+
+        sut.answer(0, 0);
+        sut.answer(1, 0);
+
+        //when
+        Integer scoreOfCategory1 = sut.scoreOf("category1");
+        Integer scoreOfCategory2 = sut.scoreOf("category2");
+
+        //then
+        assertThat(sut.isFinish()).isTrue();
+        assertThat(scoreOfCategory1).isEqualTo(10);
+        assertThat(scoreOfCategory2).isEqualTo(20);
     }
 }

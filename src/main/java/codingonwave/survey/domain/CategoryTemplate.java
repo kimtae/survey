@@ -16,10 +16,6 @@ public class CategoryTemplate {
 
     private String name;
 
-    public CategoryTemplate(Long id) {
-        this.id = id;
-    }
-
     public CategoryTemplate(String name) {
         this.name = name;
     }

@@ -50,6 +50,20 @@ public class Survey {
         return true;
     }
 
+    public Integer scoreOf(String categoryName) {
+        List<Question> questions = questionList.stream()
+                .filter(question -> question.getCategory().getName().equals(categoryName))
+                .collect(Collectors.toList());
+
+        int score = 0;
+        for (Question question : questions) {
+            Answer selectedAnswer = question.getSelectedAnswer();
+            score += selectedAnswer.getScore();
+        }
+
+        return score;
+    }
+
     private Boolean isAnswered(Question question) {
         List<Answer> answerList = question.getAnswerList();
         boolean result = false;

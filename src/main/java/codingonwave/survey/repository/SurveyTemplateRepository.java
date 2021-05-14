@@ -140,10 +140,11 @@ public class SurveyTemplateRepository {
     }
 
     private QuestionTemplate makeQuestionTemplate(QuestionTemplateDto dto) {
+        CategoryTemplate categoryTemplate = em.find(CategoryTemplate.class, dto.getCategory().getId());
         QuestionTemplate questionTemplate = new QuestionTemplate(
                 dto.getValue(),
                 dto.getQuestionType(),
-                new CategoryTemplate(dto.getCategory().getId()));
+                categoryTemplate);
 
         List<AnswerTemplate> answerTemplates = makeAnswerTemplate(dto.getAnswerTemplateList());
         answerTemplates.forEach(questionTemplate::addAnswerTemplate);
