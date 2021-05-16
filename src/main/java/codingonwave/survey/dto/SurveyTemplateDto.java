@@ -17,12 +17,19 @@ public class SurveyTemplateDto {
 
     private List<QuestionTemplateDto> questionTemplateList = new ArrayList<>();
 
-    public SurveyTemplateDto(Long id, List<QuestionTemplateDto> questionTemplateList) {
+    private Boolean active;
+
+    public SurveyTemplateDto(Long id, Boolean active, List<QuestionTemplateDto> questionTemplateList) {
         this.id = id;
+        this.active = active;
         this.questionTemplateList = questionTemplateList;
     }
 
     public SurveyTemplateDto(List<QuestionTemplateDto> questionTemplateList) {
         this.questionTemplateList = questionTemplateList;
+    }
+
+    public Boolean isActive() {
+        return active;
     }
 }

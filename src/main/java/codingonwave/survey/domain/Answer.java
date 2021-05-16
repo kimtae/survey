@@ -1,7 +1,9 @@
 package codingonwave.survey.domain;
 
 import codingonwave.survey.dto.AnswerTemplateDto;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class Answer {
 
     private String text;
@@ -28,14 +30,22 @@ public class Answer {
     }
 
     public void select() {
-        isSelected = true;
+        setSelected(true);
     }
 
     public void unselect() {
-        isSelected = false;
+        setSelected(false);
     }
 
     public Boolean isSelected() {
+        return getSelected();
+    }
+
+    public void setSelected(Boolean selected) {
+        isSelected = selected;
+    }
+
+    public Boolean getSelected() {
         return isSelected;
     }
 }

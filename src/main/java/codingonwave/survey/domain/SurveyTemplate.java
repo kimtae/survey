@@ -40,4 +40,8 @@ public class SurveyTemplate {
     public void setActive(Boolean active) {
         this.active = active;
     }
+
+    public Boolean isActive() {
+        return active;
+    }
 }

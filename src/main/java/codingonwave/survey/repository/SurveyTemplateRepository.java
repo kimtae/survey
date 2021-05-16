@@ -46,14 +46,14 @@ public class SurveyTemplateRepository {
     public List<SurveyTemplateDto> findAll() {
         List<SurveyTemplate> surveyTemplates = queryFactory.selectFrom(surveyTemplate).fetch();
         return surveyTemplates.stream()
-                .map(template -> new SurveyTemplateDto(
-                        template.getId(), convertQuestionTemplate(template.getQuestionTemplateList())))
+                .map(template -> new SurveyTemplateDto(template.getId(), template.isActive(),
+                        convertQuestionTemplate(template.getQuestionTemplateList())))
                 .collect(Collectors.toList());
     }
 
     public SurveyTemplateDto findById(Long id) {
         SurveyTemplate surveyTemplate = em.find(SurveyTemplate.class, id);
-        return new SurveyTemplateDto(surveyTemplate.getId(),
+        return new SurveyTemplateDto(surveyTemplate.getId(), surveyTemplate.isActive(),
                 convertQuestionTemplate(surveyTemplate.getQuestionTemplateList()));
     }
 
@@ -85,7 +85,7 @@ public class SurveyTemplateRepository {
                 .fetchOne();
 
         if (surveyTemplate != null) {
-            return new SurveyTemplateDto(surveyTemplate.getId(),
+            return new SurveyTemplateDto(surveyTemplate.getId(), surveyTemplate.isActive(),
                     convertQuestionTemplate(surveyTemplate.getQuestionTemplateList()));
         }
 

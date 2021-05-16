@@ -26,9 +26,19 @@ public class SurveyTemplateController {
         return repository.findById(surveyTemplateId);
     }
 
+    @GetMapping("/active")
+    public SurveyTemplateDto activeSurveyTemplate() {
+        return repository.findActiveSurveyTemplate();
+    }
+
     @PostMapping
     public void createNewSurveyTemplate(@RequestBody SurveyTemplateDto surveyTemplate) {
         repository.save(surveyTemplate);
+    }
+
+    @PatchMapping("/{surveyTemplateId}/active")
+    public void setSurveyTemplateAsActive(@PathVariable("surveyTemplateId") Long surveyTemplateId) {
+        repository.setActive(surveyTemplateId);
     }
 
     @DeleteMapping("/{surveyTemplateId}")

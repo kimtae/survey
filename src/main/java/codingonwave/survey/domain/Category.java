@@ -1,7 +1,9 @@
 package codingonwave.survey.domain;
 
 import codingonwave.survey.dto.CategoryTemplateDto;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class Category {
 
     private String name;

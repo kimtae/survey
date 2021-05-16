@@ -47,12 +47,23 @@ class SurveyTemplateControllerTest {
                 categoryTemplates[0]);
 
         QuestionTemplateDto question2 = new QuestionTemplateDto("question2", QuestionType.TEXT,
+                Arrays.asList(new AnswerTemplateDto("no", 0), new AnswerTemplateDto("no", 0)),
+                categoryTemplates[0]);
+
+        SurveyTemplateDto surveyTemplate1 = new SurveyTemplateDto(Arrays.asList(question1, question2));
+
+        QuestionTemplateDto question3 = new QuestionTemplateDto("question1", QuestionType.TEXT,
                 Arrays.asList(new AnswerTemplateDto("yes", 100), new AnswerTemplateDto("no", 0)),
                 categoryTemplates[0]);
 
-        SurveyTemplateDto surveyTemplate = new SurveyTemplateDto(Arrays.asList(question1, question2));
+        QuestionTemplateDto question4 = new QuestionTemplateDto("question2", QuestionType.TEXT,
+                Arrays.asList(new AnswerTemplateDto("no", 0), new AnswerTemplateDto("no", 0)),
+                categoryTemplates[0]);
 
-        given().contentType("application/json").body(surveyTemplate).post("survey-template");
+        SurveyTemplateDto surveyTemplate2 = new SurveyTemplateDto(Arrays.asList(question3, question4));
+
+        given().contentType("application/json").body(surveyTemplate1).post("survey-template");
+        given().contentType("application/json").body(surveyTemplate2).post("survey-template");
 
     }
 
@@ -69,7 +80,7 @@ class SurveyTemplateControllerTest {
         then().
                 statusCode(200).
                 assertThat().
-                body("size()", is(1));
+                body("size()", is(2));
 
     }
 
@@ -106,7 +117,7 @@ class SurveyTemplateControllerTest {
         then().
                 statusCode(200).
                 assertThat().
-                body("size()", is(2));
+                body("size()", is(3));
 
     }
 
@@ -306,5 +317,62 @@ class SurveyTemplateControllerTest {
         assertThat(questionTemplate.getAnswerTemplateList().size()).isEqualTo(2);
         assertThat(findQuestionTemplate.getAnswerTemplateList().size()).isEqualTo(1);
 
+    }
+
+    @Test
+    void sut_correctly_set_survey_template_as_active() {
+        //given
+        SurveyTemplateDto[] surveyTemplates = when().get("/survey-template").as(SurveyTemplateDto[].class);
+        SurveyTemplateDto surveyTemplate1 = surveyTemplates[0];
+        SurveyTemplateDto surveyTemplate2 = surveyTemplates[1];
+
+        //when
+        given().log().all().
+                pathParam("surveyTemplateId", surveyTemplate1.getId()).
+        when().
+                patch("/survey-template/{surveyTemplateId}/active").
+        then().
+                statusCode(200);
+
+        given().log().all().
+                pathParam("surveyTemplateId", surveyTemplate2.getId()).
+        when().
+                patch("/survey-template/{surveyTemplateId}/active").
+        then().
+                statusCode(200);
+
+
+        SurveyTemplateDto findSurveyTemplate1 = given().
+                pathParam("surveyTemplateId", surveyTemplate1.getId()).
+                when().get("/survey-template/{surveyTemplateId}").
+                as(SurveyTemplateDto.class);
+
+        SurveyTemplateDto findSurveyTemplate2 = given().
+                pathParam("surveyTemplateId", surveyTemplate2.getId()).
+                when().get("/survey-template/{surveyTemplateId}").
+                as(SurveyTemplateDto.class);
+
+
+        //then
+        assertThat(findSurveyTemplate1.isActive()).isFalse();
+        assertThat(findSurveyTemplate2.isActive()).isTrue();
+    }
+
+    @Test
+    void sut_correct_get_active_survey_template() {
+        //given
+        SurveyTemplateDto[] surveyTemplates = when().get("/survey-template").as(SurveyTemplateDto[].class);
+        SurveyTemplateDto surveyTemplate = surveyTemplates[0];
+
+        given().pathParam("surveyTemplateId", surveyTemplate.getId()).
+        when().patch("/survey-template/{surveyTemplateId}/active").
+        then().statusCode(200);
+
+        //when
+        SurveyTemplateDto activeSurveyTemplate = given().log().all().
+                when().get("/survey-template/active").as(SurveyTemplateDto.class);
+
+        //then
+        assertThat(activeSurveyTemplate.getId()).isEqualTo(surveyTemplate.getId());
     }
 }

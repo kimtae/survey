@@ -7,6 +7,7 @@ import codingonwave.survey.dto.QuestionTemplateDto;
 import codingonwave.survey.dto.SurveyTemplateDto;
 import codingonwave.survey.repository.CategoryTemplateRepository;
 import codingonwave.survey.repository.SurveyTemplateRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +29,27 @@ class SurveyModuleTest {
     @Autowired
     CategoryTemplateRepository categoryTemplateRepository;
 
+    @Autowired
+    SurveyModule sut;
+
     @BeforeEach
     void beforeEach() {
         CategoryTemplateDto category1 = new CategoryTemplateDto("category1");
         CategoryTemplateDto category2 = new CategoryTemplateDto("category2");
         categoryTemplateRepository.save(category1);
         categoryTemplateRepository.save(category2);
+
+        SurveyTemplateDto surveyTemplate = makeNewSurveyTemplateDto();
+        surveyTemplateRepository.save(surveyTemplate);
+        SurveyTemplateDto savedSurveyTemplate = surveyTemplateRepository.findAll().get(0);
+
+        surveyTemplateRepository.setActive(savedSurveyTemplate.getId());
+    }
+
+    @AfterEach
+    void afterEach() {
+        categoryTemplateRepository.removeAll();
+        surveyTemplateRepository.removeAll();
     }
 
     SurveyTemplateDto makeNewSurveyTemplateDto() {
@@ -67,14 +83,31 @@ class SurveyModuleTest {
     @Test
     void sut_correctly_start_survey() {
         //given
-        SurveyModule sut = new SurveyModule();
-        String sessionKey = "user";
+        String username = "user";
 
         //when
-        sut.start(sessionKey);
+        sut.start(username);
 
         //then
-        assertThat(sut.surveyOf(sessionKey)).isNotNull();
+        assertThat(sut.surveyOf(username)).isNotNull();
+        assertThat(sut.hasSurveyOf(username)).isTrue();
+    }
+
+    @Test
+    void sut_correctly_remove_survey() {
+        //given
+        String userA = "userA";
+        String userB = "userB";
+
+        sut.start(userA);
+        sut.start(userB);
+
+        //when
+        sut.remove(userA);
+
+        //then
+        assertThat(sut.hasSurveyOf(userA)).isFalse();
+        assertThat(sut.hasSurveyOf(userB)).isTrue();
 
     }
 }

@@ -1,11 +1,18 @@
 package codingonwave.survey.domain;
 
 import codingonwave.survey.dto.QuestionTemplateDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class Question {
 
     private String value;
@@ -29,15 +36,6 @@ public class Question {
         this.category = category;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public List<Answer> getAnswerList() {
-        return answerList;
-    }
-
-
     public void answer(Integer answerIndex) {
         answerList.forEach(Answer::unselect);
 
@@ -45,6 +43,7 @@ public class Question {
         answer.select();
     }
 
+    @JsonIgnore
     public Answer getSelectedAnswer() {
         return answerList.stream()
                 .filter(Answer::isSelected).findFirst().orElse(null);
@@ -52,9 +51,5 @@ public class Question {
 
     public Answer getAnswer(Integer answerIndex) {
         return answerList.get(answerIndex);
-    }
-
-    public Category getCategory() {
-        return category;
     }
 }
