@@ -3,7 +3,9 @@ package codingonwave.survey.domain;
 import codingonwave.survey.dto.SurveyTemplateDto;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Survey {
@@ -50,7 +52,22 @@ public class Survey {
         return true;
     }
 
-    public Integer scoreOf(String categoryName) {
+    public Map<String, Integer> calculateScore() {
+        List<String> categoryNames = questionList.stream()
+                .map(Question::getCategory)
+                .map(Category::getName).collect(Collectors.toList());
+
+        Map<String, Integer> scoreMap = new HashMap<>();
+        for (String categoryName : categoryNames) {
+            Integer score = scoreOf(categoryName);
+            scoreMap.put(categoryName, score);
+        }
+
+        return scoreMap;
+
+    }
+
+    private Integer scoreOf(String categoryName) {
         List<Question> questions = questionList.stream()
                 .filter(question -> question.getCategory().getName().equals(categoryName))
                 .collect(Collectors.toList());

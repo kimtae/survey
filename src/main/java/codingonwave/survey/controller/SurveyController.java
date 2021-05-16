@@ -2,6 +2,7 @@ package codingonwave.survey.controller;
 
 import codingonwave.survey.domain.Question;
 import codingonwave.survey.domain.Survey;
+import codingonwave.survey.dto.ScoreResponse;
 import codingonwave.survey.module.SurveyModule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/survey")
@@ -48,6 +50,22 @@ public class SurveyController {
 
         Survey survey = surveyModule.surveyOf(username);
         survey.answer(questionIndex, answerIndex);
+    }
+
+    @GetMapping("/score")
+    public ResponseEntity<ScoreResponse> calculateScore(@CookieValue("username") String username) {
+
+        Survey survey = surveyModule.surveyOf(username);
+        Boolean finish = survey.isFinish();
+
+        if (!finish) {
+            ScoreResponse failResponse = new ScoreResponse("this survey is not finished yet");
+            return new ResponseEntity<>(failResponse, HttpStatus.BAD_REQUEST);
+        }
+
+        Map<String, Integer> scoreMap = survey.calculateScore();
+        ScoreResponse successResponse = new ScoreResponse("success", scoreMap);
+        return new ResponseEntity<>(successResponse, HttpStatus.OK);
     }
 
     @GetMapping("/clear")

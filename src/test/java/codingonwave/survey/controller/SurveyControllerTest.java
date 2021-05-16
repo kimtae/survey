@@ -37,16 +37,20 @@ class SurveyControllerTest {
 
     void save_test_data() {
         CategoryTemplateDto category1 = new CategoryTemplateDto("category1");
+        CategoryTemplateDto category2 = new CategoryTemplateDto("category2");
+
         given().contentType("application/json").body(category1).post("/category-template");
+        given().contentType("application/json").body(category2).post("/category-template");
+
         CategoryTemplateDto[] categoryTemplates = when().get("/category-template").as(CategoryTemplateDto[].class);
 
         QuestionTemplateDto question1 = new QuestionTemplateDto("question1", QuestionType.TEXT,
-                Arrays.asList(new AnswerTemplateDto("yes", 100), new AnswerTemplateDto("no", 0)),
+                Arrays.asList(new AnswerTemplateDto("yes", 10), new AnswerTemplateDto("no", 0)),
                 categoryTemplates[0]);
 
         QuestionTemplateDto question2 = new QuestionTemplateDto("question2", QuestionType.TEXT,
-                Arrays.asList(new AnswerTemplateDto("no", 0), new AnswerTemplateDto("no", 0)),
-                categoryTemplates[0]);
+                Arrays.asList(new AnswerTemplateDto("yes", 20), new AnswerTemplateDto("no", 0)),
+                categoryTemplates[1]);
 
         SurveyTemplateDto surveyTemplate1 = new SurveyTemplateDto(Arrays.asList(question1, question2));
 
@@ -55,8 +59,8 @@ class SurveyControllerTest {
                 categoryTemplates[0]);
 
         QuestionTemplateDto question4 = new QuestionTemplateDto("question2", QuestionType.TEXT,
-                Arrays.asList(new AnswerTemplateDto("no", 0), new AnswerTemplateDto("no", 0)),
-                categoryTemplates[0]);
+                Arrays.asList(new AnswerTemplateDto("no", 200), new AnswerTemplateDto("no", 0)),
+                categoryTemplates[1]);
 
         SurveyTemplateDto surveyTemplate2 = new SurveyTemplateDto(Arrays.asList(question3, question4));
 
@@ -186,5 +190,55 @@ class SurveyControllerTest {
         assertThat(question.getAnswer(0).isSelected()).isTrue();
         assertThat(question.getSelectedAnswer().getText()).isEqualTo(question.getAnswer(0).getText());
         assertThat(question.getAnswer(1).isSelected()).isFalse();
+    }
+
+    @Test
+    void sut_correctly_dont_calculate_not_finished_survey() {
+        //given
+        given().param("username", "user").when().post("/survey");
+
+        given().cookie("username", "user").
+                param("questionIndex", 0).
+                param("answerIndex", 0).
+        when().post("/survey/answer");
+
+        //when
+        given().log().all().
+                cookie("username", "user").
+        when().
+                get("/survey/score").
+        //then
+        then().
+                statusCode(400).
+                assertThat().
+                body("message", equalTo("this survey is not finished yet"));
+    }
+
+    @Test
+    void sut_correctly_calculate_score() {
+        //given
+        given().param("username", "user").when().post("/survey");
+
+        given().cookie("username", "user").
+                param("questionIndex", 0).
+                param("answerIndex", 0).
+        when().post("/survey/answer");
+
+        given().cookie("username", "user").
+                param("questionIndex", 1).
+                param("answerIndex", 0).
+        when().post("/survey/answer");
+
+        //when
+        given().log().all().
+                cookie("username", "user").
+        when().
+                get("/survey/score").
+        //then
+        then().
+                statusCode(200).
+                assertThat().
+                body("scoreMap.category1", is(10)).
+                body("scoreMap.category2", is(20));
     }
 }

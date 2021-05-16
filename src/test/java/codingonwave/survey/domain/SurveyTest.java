@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
@@ -253,7 +254,7 @@ class SurveyTest {
     }
 
     @Test
-    void sut_correctly_calculate_by_category() {
+    void sut_correctly_calculate_score() {
         //given
         Survey sut = new Survey();
         SurveyTemplateDto surveyTemplate = surveyTemplateRepository.findAll().get(0);
@@ -263,12 +264,10 @@ class SurveyTest {
         sut.answer(1, 0);
 
         //when
-        Integer scoreOfCategory1 = sut.scoreOf("category1");
-        Integer scoreOfCategory2 = sut.scoreOf("category2");
+        Map<String, Integer> scoreMap = sut.calculateScore();
 
         //then
-        assertThat(sut.isFinish()).isTrue();
-        assertThat(scoreOfCategory1).isEqualTo(10);
-        assertThat(scoreOfCategory2).isEqualTo(20);
+        assertThat(scoreMap.get("category1")).isEqualTo(10);
+        assertThat(scoreMap.get("category2")).isEqualTo(20);
     }
 }
